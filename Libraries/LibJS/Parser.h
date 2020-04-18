@@ -50,7 +50,7 @@ public:
     NonnullRefPtr<BlockStatement> parse_block_statement();
     NonnullRefPtr<ReturnStatement> parse_return_statement();
     NonnullRefPtr<VariableDeclaration> parse_variable_declaration();
-    NonnullRefPtr<ForStatement> parse_for_statement();
+    NonnullRefPtr<Statement> parse_for_statement();
     NonnullRefPtr<IfStatement> parse_if_statement();
     NonnullRefPtr<ThrowStatement> parse_throw_statement();
     NonnullRefPtr<TryStatement> parse_try_statement();

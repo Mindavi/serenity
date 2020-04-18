@@ -270,10 +270,10 @@ bool write_to_file(const StringView& path)
 
 ReplObject::ReplObject()
 {
-    put_native_function("exit", exit_interpreter);
-    put_native_function("help", repl_help);
-    put_native_function("load", load_file, 1);
-    put_native_function("save", save_to_file, 1);
+    //put_native_function("exit", exit_interpreter);
+    //put_native_function("help", repl_help);
+    //put_native_function("load", load_file, 1);
+    //put_native_function("save", save_to_file, 1);
 }
 
 ReplObject::~ReplObject()
@@ -662,7 +662,7 @@ int main(int argc, char** argv)
 
         if (parser.has_errors()) {
             printf("Parse Error\n");
-            return 1;
+            return 0;
         }
 
         auto result = interpreter->run(*program);
@@ -671,7 +671,7 @@ int main(int argc, char** argv)
             printf("Uncaught exception: ");
             print(interpreter->exception()->value());
             interpreter->clear_exception();
-            return 1;
+            return 0;
         }
         if (print_last_result)
             print(result);

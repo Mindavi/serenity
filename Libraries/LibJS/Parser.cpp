@@ -876,23 +876,30 @@ NonnullRefPtr<IfStatement> Parser::parse_if_statement()
     return create_ast_node<IfStatement>(move(predicate), move(consequent), move(alternate));
 }
 
-NonnullRefPtr<ForStatement> Parser::parse_for_statement()
+NonnullRefPtr<Statement> Parser::parse_for_statement()
 {
     consume(TokenType::For);
 
-    consume(TokenType::ParenOpen);
+    if (consume(TokenType::ParenOpen).type() != TokenType::ParenOpen) {
+        // We can't parse this any more
+        expected("for loop initializer");
+        return create_ast_node<ErrorStatement>();
+    }
 
     RefPtr<ASTNode> init;
     switch (m_parser_state.m_current_token.type()) {
     case TokenType::Semicolon:
         break;
     default:
-        if (match_expression())
+        if (match_expression()) {
             init = parse_expression(0);
-        else if (match_variable_declaration())
+        } else if (match_variable_declaration()) {
             init = parse_variable_declaration();
-        else
-            ASSERT_NOT_REACHED();
+        } else {
+            expected("for loop initializer");
+            return create_ast_node<ErrorStatement>();
+            //ASSERT_NOT_REACHED();
+        }
         break;
     }
 

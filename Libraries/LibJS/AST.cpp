@@ -748,13 +748,20 @@ Value AssignmentExpression::execute(Interpreter& interpreter) const
 
 Value UpdateExpression::execute(Interpreter& interpreter) const
 {
-    ASSERT(m_argument->is_identifier());
+    if (!m_argument->is_identifier()) {
+        // What kind of error is this?
+        return interpreter.throw_exception<SyntaxError>(String::format("UpdateExpression can't be applied to '%s'", m_argument->class_name()));
+    }
     auto name = static_cast<const Identifier&>(*m_argument).string();
 
     auto previous_variable = interpreter.get_variable(name);
-    ASSERT(previous_variable.has_value());
+    if (!previous_variable.has_value()) {
+        return interpreter.throw_exception<ReferenceError>(String::format("'%s' not known", name.characters()));
+    }
     auto previous_value = previous_variable.value();
-    ASSERT(previous_value.is_number());
+    if (!previous_value.is_number()) {
+        return interpreter.throw_exception<TypeError>(String::format("%s is not a Number", name.characters()));
+    }
 
     int op_result = 0;
     switch (m_op) {
